@@ -282,6 +282,21 @@
                   />
                 </div>
                 <div class="form-group">
+                  <label for="telefono">Teléfono (opcional)</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="telefono"
+                    placeholder="Ej: +569 1234 5678"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="pais">País</label>
+                  <select class="form-control" id="pais">
+                    <option value="">Selecciona tu país...</option>
+                  </select>
+                </div>
+                <div class="form-group">
                   <label for="mensaje">Mensaje</label>
                   <textarea
                     class="form-control"
@@ -336,33 +351,71 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
       $(document).ready(function () {
+        loadCountries();
+
+        function loadCountries() {
+          $.get("https://restcountries.com/v3.1/lang/spanish", function (data) {
+            const paisesOrdenados = data
+              .map((pais) => ({
+                nombre: pais.translations?.spa?.common || pais.name.common,
+                codigo: pais.name.common,
+              }))
+              .sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+            paisesOrdenados.forEach((pais) => {
+              $("#pais").append(
+                `<option value="${pais.nombre}">${pais.nombre}</option>`
+              );
+            });
+          }).fail(function () {
+            const paisesFallback = [
+              "Argentina",
+              "Brasil",
+              "Chile",
+              "Colombia",
+              "España",
+              "México",
+              "Perú",
+              "Venezuela",
+              "Uruguay",
+              "Ecuador",
+            ];
+            paisesFallback.forEach((pais) => {
+              $("#pais").append(`<option value="${pais}">${pais}</option>`);
+            });
+          });
+        }
+
         $("form").on("submit", function (e) {
           e.preventDefault();
           const envio = {
             nombre: $("#nombre").val(),
             email: $("#email").val(),
+            telefono: $("#telefono").val(),
+            pais: $("#pais").val(),
             mensaje: $("#mensaje").val(),
           };
+          if (!$("#nombre").val() || !$("#email").val() || !$("#mensaje").val() || !$("#pais").val() || !$("#telefono").val()) {
+            alert("Por favor completa todos los campos");
+            return;
+          }
 
           const envios = JSON.parse(localStorage.getItem("envios")) || [];
           envios.push(envio);
           localStorage.setItem("envios", JSON.stringify(envios));
 
-          $.post(
-            "https://jsonplaceholder.typicode.com/posts",
-            envio,
-            function (data) {
-              $("form").fadeOut(300, function () {
-                $("#envioExito").fadeIn(400);
-              });
-            }
-          );
+          $("form").fadeOut(300, function () {
+            $("#envioExito").fadeIn(400);
+          });
 
-          this.reset();
+          setTimeout(() => {
+            this.reset();
+          }, 100);
         });
-      }); 
+      });
     </script>
   </body>
 </html>

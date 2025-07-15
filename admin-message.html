@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FastGo - Entregas Express Inteligentes</title>
@@ -23,7 +23,7 @@
     />
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
-<body>
+  <body>
     <nav class="navbar navbar-expand-lg main-navbar shadow-sm fixed-top">
       <div class="container">
         <a
@@ -76,111 +76,210 @@
         </div>
       </div>
     </nav>
-  <div class="container my-5">
-  <h2 class="mb-4 font-weight-bold text-primary">Mensajes de Contacto</h2>
-  <div class="table-responsive rounded shadow-sm">
-    <table class="table table-hover align-middle mb-0" id="adminEnviosTable" style="background: #fff; border-radius: 1.2rem;">
-      <thead class="thead-light text-center" style="background: #f3f4f6;">
-        <tr>
-          <th class="border-0 py-3 px-4">Nombre</th>
-          <th class="border-0 py-3 px-4">Email</th>
-          <th class="border-0 py-3 px-4">Mensaje</th>
-          <th class="border-0 py-3 px-4 text-center">Acciones</th>
-        </tr>
-      </thead>
-      <tbody class="text-center"></tbody>
-    </table>
-  </div>
-</div>
-
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <form id="editForm" class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editModalLabel">Editar Mensaje</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" id="editIdx">
-          <div class="form-group">
-            <label for="editNombre">Nombre</label>
-            <input type="text" class="form-control" id="editNombre" required>
-          </div>
-          <div class="form-group">
-            <label for="editEmail">Correo electrónico</label>
-            <input type="email" class="form-control" id="editEmail" required>
-          </div>
-          <div class="form-group">
-            <label for="editMensaje">Mensaje</label>
-            <textarea class="form-control" id="editMensaje" rows="4" required></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Guardar cambios</button>
-        </div>
-      </form>
+    <div class="container my-5">
+      <h2 class="mb-4 font-weight-bold text-primary">Mensajes de Contacto</h2>
+      <div class="table-responsive rounded shadow-sm">
+        <table
+          class="table table-hover align-middle mb-0"
+          id="adminEnviosTable"
+          style="background: #fff; border-radius: 1.2rem"
+        >
+          <thead class="thead-light text-center" style="background: #f3f4f6">
+            <tr>
+              <th class="border-0 py-3 px-4">Nombre</th>
+              <th class="border-0 py-3 px-4">Email</th>
+              <th class="border-0 py-3 px-4">Teléfono</th>
+              <th class="border-0 py-3 px-4">Pais</th>
+              <th class="border-0 py-3 px-4">Mensaje</th>
+              <th class="border-0 py-3 px-4 text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="text-center"></tbody>
+        </table>
+      </div>
     </div>
-  </div>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    function renderAdminEnvios() {
-      const envios = JSON.parse(localStorage.getItem("envios")) || [];
-      let html = "";
-      envios.forEach((envio, idx) => {
-        html += `<tr>
+    <div
+      class="modal fade"
+      id="editModal"
+      tabindex="-1"
+      aria-labelledby="editModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <form id="editForm" class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Editar Mensaje</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Cerrar"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="editIdx" />
+            <div class="form-group">
+              <label for="editNombre">Nombre</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editNombre"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmail">Correo electrónico</label>
+              <input
+                type="email"
+                class="form-control"
+                id="editEmail"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="editTelefono">Teléfono (opcional)</label>
+              <input
+                type="tel"
+                class="form-control"
+                id="editTelefono"
+                placeholder="Ej: +569 1234 5678"
+              />
+            </div>
+            <div class="form-group">
+              <label for="editPais">País</label>
+              <select class="form-control" id="editPais" required>
+                <option value="">Selecciona un país...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="editMensaje">Mensaje</label>
+              <textarea
+                class="form-control"
+                id="editMensaje"
+                rows="4"
+                required
+              ></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Guardar cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function renderAdminEnvios() {
+        const envios = JSON.parse(localStorage.getItem("envios")) || [];
+        let html = "";
+        envios.forEach((envio, idx) => {
+          html += `<tr>
           <td>${envio.nombre}</td>
           <td>${envio.email}</td>
+          <td>${envio.telefono || "No especificado"}</td>
+          <td>${envio.pais || "No especificado"}</td>
           <td>${envio.mensaje}</td>
           <td>
             <button class="btn btn-sm btn-info edit-envio" data-idx="${idx}">Editar</button>
             <button class="btn btn-sm btn-danger delete-envio" data-idx="${idx}">Eliminar</button>
           </td>
         </tr>`;
+        });
+        $("#adminEnviosTable tbody").html(html);
+      }
+      function cargarPaisesModal() {
+        $.get("https://restcountries.com/v3.1/lang/spanish", function (data) {
+          const paisesOrdenados = data
+            .map((pais) => ({
+              nombre: pais.translations?.spa?.common || pais.name.common,
+              codigo: pais.name.common,
+            }))
+            .sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+          let options = '<option value="">Selecciona un país...</option>';
+          paisesOrdenados.forEach((pais) => {
+            options += `<option value="${pais.nombre}">${pais.nombre}</option>`;
+          });
+          $("#editPais").html(options);
+        }).fail(function () {
+          const paisesFallback = [
+            "Argentina",
+            "Chile",
+            "Colombia",
+            "España",
+            "México",
+            "Perú",
+            "Venezuela",
+            "Uruguay",
+            "Ecuador",
+          ];
+          let options = '<option value="">Selecciona un país...</option>';
+          paisesFallback.forEach((pais) => {
+            options += `<option value="${pais}">${pais}</option>`;
+          });
+          $("#editPais").html(options);
+        });
+      }
+
+      $(document).on("click", ".delete-envio", function () {
+        const idx = $(this).data("idx");
+        let envios = JSON.parse(localStorage.getItem("envios")) || [];
+        envios.splice(idx, 1);
+        localStorage.setItem("envios", JSON.stringify(envios));
+        renderAdminEnvios();
       });
-      $("#adminEnviosTable tbody").html(html);
-    }
 
-    $(document).on("click", ".delete-envio", function () {
-      const idx = $(this).data("idx");
-      let envios = JSON.parse(localStorage.getItem("envios")) || [];
-      envios.splice(idx, 1);
-      localStorage.setItem("envios", JSON.stringify(envios));
-      renderAdminEnvios();
-    });
+      $(document).on("click", ".edit-envio", function () {
+        const idx = $(this).data("idx");
+        const envios = JSON.parse(localStorage.getItem("envios")) || [];
+        const envio = envios[idx];
+        cargarPaisesModal();
 
-    $(document).on("click", ".edit-envio", function () {
-      const idx = $(this).data("idx");
-      const envios = JSON.parse(localStorage.getItem("envios")) || [];
-      const envio = envios[idx];
-      $("#editIdx").val(idx);
-      $("#editNombre").val(envio.nombre);
-      $("#editEmail").val(envio.email);
-      $("#editMensaje").val(envio.mensaje);
-      $("#editModal").modal("show");
-    });
+        $("#editIdx").val(idx);
+        $("#editNombre").val(envio.nombre);
+        $("#editTelefono").val(envio.telefono || "");
+        $("#editEmail").val(envio.email);
+        $("#editMensaje").val(envio.mensaje);
 
-    $("#editForm").on("submit", function (e) {
-      e.preventDefault();
-      const idx = $("#editIdx").val();
-      let envios = JSON.parse(localStorage.getItem("envios")) || [];
-      envios[idx] = {
-        nombre: $("#editNombre").val(),
-        email: $("#editEmail").val(),
-        mensaje: $("#editMensaje").val()
-      };
-      localStorage.setItem("envios", JSON.stringify(envios));
-      $("#editModal").modal("hide");
-      renderAdminEnvios();
-    });
+        setTimeout(() => {
+          $("#editPais").val(envio.pais || "");
+          $("#editModal").modal("show");
+        }, 500);
+      });
 
-    $(document).ready(function () {
-      renderAdminEnvios();
-    });
-  </script>
-</body>
+      $("#editForm").on("submit", function (e) {
+        e.preventDefault();
+        const idx = $("#editIdx").val();
+        let envios = JSON.parse(localStorage.getItem("envios")) || [];
+        envios[idx] = {
+          nombre: $("#editNombre").val(),
+          email: $("#editEmail").val(),
+          telefono: $("#editTelefono").val(),
+          pais: $("#editPais").val(),
+          mensaje: $("#editMensaje").val(),
+        };
+        localStorage.setItem("envios", JSON.stringify(envios));
+        $("#editModal").modal("hide");
+        renderAdminEnvios();
+      });
+
+      $(document).ready(function () {
+        renderAdminEnvios();
+      });
+    </script>
+  </body>
 </html>
