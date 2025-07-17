@@ -351,70 +351,95 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script>
       $(document).ready(function () {
-        loadCountries();
+      loadCountries();
 
-        function loadCountries() {
-          $.get("https://restcountries.com/v3.1/lang/spanish", function (data) {
-            const paisesOrdenados = data
-              .map((pais) => ({
-                nombre: pais.translations?.spa?.common || pais.name.common,
-                codigo: pais.name.common,
-              }))
-              .sort((a, b) => a.nombre.localeCompare(b.nombre));
+      //cargamos la lista de paises que hablan español en el selector
+      function loadCountries() {
+        $.get("https://restcountries.com/v3.1/lang/spanish", function (data) {
+        const paisesOrdenados = data
+          .map((pais) => {
+          const nombreTraducido =
+            pais.translations?.spa?.common || pais.name.common;
+          const nombreOficial =
+            pais.translations?.spa?.official || pais.name.official;
+          const nombreCompleto = `${nombreTraducido} (${nombreOficial})`;
 
-            paisesOrdenados.forEach((pais) => {
-              $("#pais").append(
-                `<option value="${pais.nombre}">${pais.nombre}</option>`
-              );
-            });
-          }).fail(function () {
-            const paisesFallback = [
-              "Argentina",
-              "Brasil",
-              "Chile",
-              "Colombia",
-              "España",
-              "México",
-              "Perú",
-              "Venezuela",
-              "Uruguay",
-              "Ecuador",
-            ];
-            paisesFallback.forEach((pais) => {
-              $("#pais").append(`<option value="${pais}">${pais}</option>`);
-            });
-          });
+          return {
+            nombre: nombreTraducido,
+            nombreCompleto: nombreCompleto,
+            codigo: pais.name.common,
+          };
+          })
+          .sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+        //agregamos cada pais como opcion en el select
+        paisesOrdenados.forEach((pais) => {
+          $("#pais").append(
+          `<option value="${pais.nombreCompleto}">${pais.nombreCompleto}</option>`
+          );
+        });
+        }).fail(function () {
+        //en caso de que falle la api precargamos una lista de paises
+        const paisesFallback = [
+          "Argentina (República Argentina)",
+          "Brasil (República Federativa del Brasil)",
+          "Chile (República de Chile)",
+          "Colombia (República de Colombia)",
+          "España (Reino de España)",
+          "México (Estados Unidos Mexicanos)",
+          "Perú (República del Perú)",
+          "Venezuela (República Bolivariana de Venezuela)",
+          "Uruguay (República Oriental del Uruguay)",
+          "Ecuador (República del Ecuador)",
+        ];
+        paisesFallback.forEach((pais) => {
+          const nombreCorto = pais.split(" (")[0];
+          $("#pais").append(
+          `<option value="${nombreCorto}">${pais}</option>`
+          );
+        });
+        });
+      }
+
+      //aqui manejamos el envio de formulario
+      $("form").on("submit", function (e) {
+        e.preventDefault();
+        const envio = {
+        nombre: $("#nombre").val(),
+        email: $("#email").val(),
+        telefono: $("#telefono").val(),
+        pais: $("#pais").val(),
+        mensaje: $("#mensaje").val(),
+        };
+        //validamos que los campos no esten vacios
+        if (
+        !$("#nombre").val() ||
+        !$("#email").val() ||
+        !$("#mensaje").val() ||
+        !$("#pais").val() ||
+        !$("#telefono").val()
+        ) {
+        alert("Por favor completa todos los campos");
+        return;
         }
 
-        $("form").on("submit", function (e) {
-          e.preventDefault();
-          const envio = {
-            nombre: $("#nombre").val(),
-            email: $("#email").val(),
-            telefono: $("#telefono").val(),
-            pais: $("#pais").val(),
-            mensaje: $("#mensaje").val(),
-          };
-          if (!$("#nombre").val() || !$("#email").val() || !$("#mensaje").val() || !$("#pais").val() || !$("#telefono").val()) {
-            alert("Por favor completa todos los campos");
-            return;
-          }
+        //hacemos el guardado en el localstorage
+        const envios = JSON.parse(localStorage.getItem("envios")) || [];
+        envios.push(envio);
+        localStorage.setItem("envios", JSON.stringify(envios));
 
-          const envios = JSON.parse(localStorage.getItem("envios")) || [];
-          envios.push(envio);
-          localStorage.setItem("envios", JSON.stringify(envios));
-
-          $("form").fadeOut(300, function () {
-            $("#envioExito").fadeIn(400);
-          });
-
-          setTimeout(() => {
-            this.reset();
-          }, 100);
+        //mostramos el mensaje de exito
+        $("form").fadeOut(300, function () {
+        $("#envioExito").fadeIn(400);
         });
+
+        //limpiamos los campos del formulario
+        setTimeout(() => {
+        this.reset();
+        }, 100);
+      });
       });
     </script>
   </body>

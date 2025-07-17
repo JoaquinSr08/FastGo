@@ -182,6 +182,22 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!--
+      Este script administra la visualización y edición de envíos almacenados en localStorage para un panel de administración.
+
+      Funciones principales:
+      - renderAdminEnvios(): Renderiza la tabla de envíos en el DOM, mostrando nombre, email, teléfono, país y mensaje. Incluye botones para editar y eliminar cada envío.
+      - cargarPaisesModal(): Obtiene la lista de países en español desde una API pública y la carga en el select del modal de edición. Si la API falla, utiliza una lista de países de respaldo.
+      - Eventos:
+        - .delete-envio: Elimina el envío seleccionado del localStorage y actualiza la tabla.
+        - .edit-envio: Abre el modal de edición con los datos del envío seleccionado y carga la lista de países.
+        - #editForm submit: Guarda los cambios realizados en el envío editado y actualiza la tabla.
+      - Inicialización: Al cargar el documento, se renderiza la tabla de envíos.
+
+      Notas:
+      - El almacenamiento de datos se realiza en localStorage bajo la clave "envios".
+      - El modal de edición utiliza jQuery y Bootstrap para la interacción.
+    -->
     <script>
       function renderAdminEnvios() {
         const envios = JSON.parse(localStorage.getItem("envios")) || [];
@@ -204,32 +220,43 @@
       function cargarPaisesModal() {
         $.get("https://restcountries.com/v3.1/lang/spanish", function (data) {
           const paisesOrdenados = data
-            .map((pais) => ({
-              nombre: pais.translations?.spa?.common || pais.name.common,
-              codigo: pais.name.common,
-            }))
+            .map((pais) => {
+              const nombreTraducido =
+                pais.translations?.spa?.common || pais.name.common;
+              const nombreOficial =
+                pais.translations?.spa?.official || pais.name.official;
+              const nombreCompleto = `${nombreTraducido} (${nombreOficial})`;
+
+              return {
+                nombre: nombreTraducido,
+                nombreCompleto: nombreCompleto,
+                codigo: pais.name.common,
+              };
+            })
             .sort((a, b) => a.nombre.localeCompare(b.nombre));
 
           let options = '<option value="">Selecciona un país...</option>';
           paisesOrdenados.forEach((pais) => {
-            options += `<option value="${pais.nombre}">${pais.nombre}</option>`;
+            options += `<option value="${pais.nombre}">${pais.nombreCompleto}</option>`;
           });
           $("#editPais").html(options);
         }).fail(function () {
           const paisesFallback = [
-            "Argentina",
-            "Chile",
-            "Colombia",
-            "España",
-            "México",
-            "Perú",
-            "Venezuela",
-            "Uruguay",
-            "Ecuador",
+            "Argentina (República Argentina)",
+            "Brasil (República Federativa del Brasil)",
+            "Chile (República de Chile)",
+            "Colombia (República de Colombia)",
+            "España (Reino de España)",
+            "México (Estados Unidos Mexicanos)",
+            "Perú (República del Perú)",
+            "Venezuela (República Bolivariana de Venezuela)",
+            "Uruguay (República Oriental del Uruguay)",
+            "Ecuador (República del Ecuador)",
           ];
           let options = '<option value="">Selecciona un país...</option>';
           paisesFallback.forEach((pais) => {
-            options += `<option value="${pais}">${pais}</option>`;
+            const nombreCorto = pais.split(" (")[0];
+            options += `<option value="${nombreCorto}">${pais}</option>`;
           });
           $("#editPais").html(options);
         });
